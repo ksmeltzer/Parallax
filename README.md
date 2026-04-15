@@ -382,6 +382,23 @@ This produces a characteristic confusion. From Service A's subjective vantage po
 
 This is locality complexity — the architectural overhead of every participant needing to model every other participant's position. And it compounds. Service A calls B and C. B calls D. A must know about B and C. B must know about D. If D moves, B breaks. If B breaks, A breaks. Locality propagates upward through call chains. Every addition to the topology increases the spatial knowledge every participant must maintain.
 
+```mermaid
+graph TD
+    subgraph "Before: RPC Locality Complexity"
+    A[Service A] -->|Calls| B[Service B]
+    A -->|Calls| C[Service C]
+    B -->|Calls| D[Service D]
+    end
+
+    subgraph "After: Parallax Event Space"
+    E[Observer A] -->|Emits Intent| Space((Event Space))
+    Space -->|Delivers Event| F[Observer B]
+    Space -->|Delivers Event| G[Observer C]
+    F -->|Emits Intent| Space
+    Space -->|Delivers Event| H[Observer D]
+    end
+```
+
 Now look at the infrastructure that exists to manage this:
 
 - **Service discovery** — so callers can find callees when they move
@@ -426,6 +443,36 @@ Now consider the failure conditions — where the argument sharpens. In the trad
 In the Parallax model, each observer handles its own failures independently. If the cache observer encounters a storage error, it deals with that error on its own terms — it may emit a cache-miss event (indistinguishable from a simple absence), retry internally, or emit a degradation event. The requesting observer never sees the cache's internal failure; it simply observes whether a data event arrives within its causal timeout. If the database observer cannot find Order 42, it emits a "no such order" event into the space. The requesting observer receives that event and updates its beliefs accordingly. The cache observer also receives it and can update or invalidate its own state. If the database observer is entirely unavailable, no data event arrives at all — the requesting observer's temporal condition (Section 14.2) detects the absence and escalates through the standard mechanism (Section 14.4). No observer needed to know which layer failed or why. Each observer's error handling is local to its own subjective vantage point, governed by its own causal observations, decoupled from every other observer's failure modes. Error handling, like data flow, loses its locality complexity.
 
 The entire cache-miss-then-lookup-then-fill pattern — with its layered spatial knowledge, its invalidation logic, its connection management between tiers, its cache-stampede mitigation — dissolves. Not because caching disappeared, but because the abstraction no longer requires any observer to know *where* data lives. The business requirement was "I need the current state of Order 42." The traditional architecture turned that into "check this cache at this address, and if it misses, call this database at this endpoint, then write back to the cache." That second formulation is pure locality complexity — spatial knowledge demanded by the abstraction, not by the domain. The information asymmetry between cache and database was an artifact of placing truth in one location and forcing every other location to manage its distance from that truth.
+
+```mermaid
+sequenceDiagram
+    box "Before: Layered Spatial Knowledge"
+    participant App as Application
+    participant Cache
+    participant DB as Database
+    end
+
+    App->>Cache: 1. Get Order 42
+    Cache-->>App: 2. Cache Miss
+    App->>DB: 3. Query Order 42
+    DB-->>App: 4. Return Data
+    App->>Cache: 5. Write Data
+    
+    box "After: Parallax Event Space"
+    participant Req as Requesting Observer
+    participant Space as Event Space
+    participant CO as Cache Observer
+    participant DO as Database Observer
+    end
+
+    Req->>Space: 1. Emit: "Require Order 42"
+    Space->>CO: 2. Deliver Requirement
+    CO->>Space: 3. Emit: "Cache Miss"
+    Space->>DO: 4. Deliver Miss Event
+    DO->>Space: 5. Emit: "Order 42 Data"
+    Space->>Req: 6. Deliver Data
+    Space->>CO: 6. Deliver Data (Update Cache)
+```
 
 In the causally aligned model, truth is not a place. Truth is what has been observed in the space. An observer's beliefs are not "copies" of some authoritative original — they are the observer's causal history, as valid from its subjective vantage point as any other observer's history is from theirs. Consistency is achieved not by ensuring every copy matches a single source, but by ensuring every observer's beliefs converge through shared causal structure — the same mechanism that governs consistency everywhere else in the framework.
 
