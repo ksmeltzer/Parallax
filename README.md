@@ -1212,7 +1212,7 @@ graph TD
     subgraph "Traditional: Timeout = Failure (Anti-Pattern)"
         direction LR
         O1[Observer A] -- "1. Sync Call" --> S2[Service B]
-        S2 -. "2. No Response (Delay/Crash)" .-X O1
+        S2 -. "2. No Response (Delay/Crash)" .-> O1
         O1 -- "3. Throw 'Service B is DOWN' Error" --> Error((State\nFailure))
     end
 
