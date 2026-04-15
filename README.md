@@ -1,4 +1,8 @@
-# <img src="logo.png" alt="Parallax Logo" width="50" align="top"> Parallax: Toward Causally Aligned Distributed Systems
+<div align="center">
+  <img src="logo.png" alt="Parallax Logo" width="300" />
+</div>
+
+# Parallax: Toward Causally Aligned Distributed Systems
 
 ## A Theory of Time, Causality, and Knowledge in Distributed Software
 
