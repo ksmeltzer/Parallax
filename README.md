@@ -78,6 +78,24 @@ In Minkowski spacetime, the spacetime interval between two events is:
 
 When ds² < 0, the events are *timelike separated* -- causally connectable, with an observer-independent ordering. When ds² > 0, they are *spacelike separated* -- causally disconnected, with no invariant ordering. When ds² = 0, they lie on each other's light cones.
 
+```mermaid
+graph TD
+    subgraph "The Causal Message Cone"
+        direction BT
+        Past[/"Past Message Cone\n(Events that could have influenced E)"/] --> E((Event E))
+        E --> Future[\"Future Message Cone\n(Events E can influence)"\]
+        
+        S1["Spacelike Separated\n(Elsewhere)"] -. "No causal\npath" .- E
+        S2["Spacelike Separated\n(Elsewhere)"] -. "No causal\npath" .- E
+    end
+    
+    style E fill:#f96,stroke:#333,stroke-width:4px
+    style Past fill:#eef,stroke:#99f,stroke-dasharray: 5 5
+    style Future fill:#eef,stroke:#99f,stroke-dasharray: 5 5
+    style S1 fill:#fbb,stroke:#f66,stroke-dasharray: 5 5
+    style S2 fill:#fbb,stroke:#f66,stroke-dasharray: 5 5
+```
+
 For distributed systems, the structural correspondence is: the speed of light maps to the speed of message propagation, and the light cone maps to the *message cone* -- the set of events reachable from a given event by message passing. Events at different nodes that have exchanged no messages (directly or transitively) are the distributed equivalent of spacelike-separated events. Assigning them an order is logically unjustified.
 
 The correspondence is structural, not exact. The speed of light is an invariant constant; message propagation speed is variable and unpredictable. The light cone is a fixed geometric structure; the message cone is elastic and mutable (see Section 2.7). But the core insight holds: events with no causal connection have no inherent ordering, and any system that assigns one is fabricating information.
@@ -308,6 +326,37 @@ This is not a metaphor. The speed of message propagation is finite. The causal s
 Distributed systems are often designed as if observing a film — a pre-recorded, totally ordered narrative where every scene follows logically from the last, the director controls what happens, and the ending is determined before the first frame plays. In reality, operating a distributed system is like playing a multiplayer video game. An observer is one participant in a world where other participants are acting independently. Events are occurring that cannot be seen globally. Entire regions of the system are changing state while local attention is pointed elsewhere. No player has the complete picture. Each player's experience is a subjective slice of a larger reality that no single participant observes in full. And there is no director — the "story" is emergent, not scripted.
 
 The film model feels natural because it matches how humans construct narratives (Section 7.1). But it is the wrong model. A film has a single camera, a single timeline, and a single authoritative cut. A multiplayer game has many players, many timelines, and no authoritative perspective — only the partial, local experience of each participant. Distributed systems are multiplayer games. They continue to be designed as films.
+
+```mermaid
+graph LR
+    subgraph The Narrative Fallacy (Illusion)
+        direction LR
+        Step1(Order Placed) --> Step2(Payment Processed)
+        Step2 --> Step3(Inventory Reserved)
+        Step3 --> Step4(Order Confirmed)
+        style Step1 fill:#ddd,stroke:#333
+        style Step2 fill:#ddd,stroke:#333
+        style Step3 fill:#ddd,stroke:#333
+        style Step4 fill:#ddd,stroke:#333
+    end
+
+    subgraph The Causal Reality (Multiplayer Game)
+        direction TD
+        A((Order Node))
+        B((Payment Node))
+        C((Inventory Node))
+        
+        A -- "Emit: Order Placed\n(Unordered locally)" --> Space((Event Space))
+        Space -.->|"Observe"| B
+        Space -.->|"Observe"| C
+        
+        B -- "Emit: Payment OK" --> Space
+        C -- "Emit: Reserved" --> Space
+        
+        Space -.->|"Observe Both"| A
+        A -- "Emit: Confirmed\n(Causally depends on both)" --> Space
+    end
+```
 
 The narrative fallacy [Taleb 2007] is the human tendency to construct coherent stories from partial, ambiguous evidence and then mistake those stories for reality. In software engineering, this manifests as:
 
@@ -1157,6 +1206,29 @@ The liveness problem cannot be solved within the causal framework alone. Causal 
 **Principle: Timeout as escalation, not as failure.**
 
 The document identifies timeouts-as-failure as an anti-pattern (Section 11.2). The replacement is **timeouts-as-escalation**: when a temporal condition has been pending beyond an expected duration, the system emits an **escalation event**. An escalation event does not assert that anything has failed. It asserts: "I have been waiting longer than expected, and I am reporting this fact."
+
+```mermaid
+graph TD
+    subgraph Traditional: Timeout = Failure (Anti-Pattern)
+        direction LR
+        O1[Observer A] -- "1. Sync Call" --> S2[Service B]
+        S2 -. "2. No Response (Delay/Crash)" .-X O1
+        O1 -- "3. Throw 'Service B is DOWN' Error" --> Error((State\nFailure))
+    end
+
+    subgraph Parallax: Timeout = Escalation (Causal Fact)
+        direction LR
+        PA[Observer A] -- "1. Emits Intent" --> Space((Event Space))
+        Space -. "2. Awaits Event\n(Causal Ticks pass...)" .- PA
+        PA -- "3. Emits 'Escalation:\nEvent Missing' (Fact)" --> Space
+        Space -- "4. Match Interest" --> HA[Human Operator\nor Auto-Mitigation]
+    end
+    
+    classDef err fill:#faa,stroke:#f00;
+    classDef safe fill:#afa,stroke:#090;
+    class Error err;
+    class PA safe;
+```
 
 ```
 when({
