@@ -16,7 +16,7 @@ It is intentionally long-form and rigorous. Any shorter expression -- slides, on
 
 The document is structured in five parts:
 
-- **Part I: Scientific Foundations** establishes what physics, mathematics, and epistemology tell us about time, causality, and knowledge.
+- **Part I: Scientific Foundations** establishes what physics, mathematics, and epistemology reveal about time, causality, and knowledge.
 - **Part II: The Theory** defines causal alignment, its axioms, and the violations endemic in current practice.
 - **Part III: The Formal Framework** provides the mathematical and programming structures needed to build causally aligned systems.
 - **Part IV: Practice and Adoption** addresses comparative analysis, incremental migration, and evaluation.
@@ -28,7 +28,7 @@ This document is comprehensive. Not every reader needs to read it linearly. The 
 
 **Theory-first** (for researchers, architects, skeptics): Sections 1 → 2 → 3 → 5 → 10 → 12. Establishes the scientific foundations, then the formal framework. Read the rest for application.
 
-**Implementation-first** (for engineers building systems): Sections 10 → 12 → 14 → 17 → 21. Axioms, primitives, programming model, reference architecture, adoption path. Return to Part I when you want to understand *why* these constraints exist.
+**Implementation-first** (for engineers building systems): Sections 10 → 12 → 14 → 17 → 21. Axioms, primitives, programming model, reference architecture, adoption path. Return to Part I to understand *why* these constraints exist.
 
 **Ops-first** (for SRE, platform, and operations teams): Sections 17 → 21 → 22 → 24. Reference architecture, adoption phases, ROI, benchmarks. Section 14.4 (liveness and escalation) is directly relevant to operational concerns.
 
@@ -48,7 +48,7 @@ Because distributed systems are physical systems, the causal structure of spacet
 
 But distributed systems are strictly **harder** than the spacetime physics alone would suggest. Networks lose, duplicate, and corrupt messages -- spacetime does not drop signals along causal paths. Message propagation speed varies by orders of magnitude -- the speed of light is an invariant constant. Network topology changes dynamically -- the causal structure of spacetime is fixed. Distributed systems support event replay -- spacetime has no such concept. These additional failure modes mean that even if an abstraction respects the physical lower bound, it may still be misaligned with the actual operating conditions of distributed computation (see Section 2.7).
 
-When we design abstractions that assume instantaneous global knowledge, total ordering of independent events, or synchronous completion across spatial separation, we are not making simplifying assumptions -- we are asserting things that are physically false. And the actual operating environment is harder still.
+Designing abstractions that assume instantaneous global knowledge, total ordering of independent events, or synchronous completion across spatial separation is not making simplifying assumptions -- it is asserting things that are physically false. And the actual operating environment is harder still.
 
 ---
 
@@ -92,7 +92,7 @@ For distributed systems, this maps precisely: each node has its own local clock,
 
 ### 2.4 The Arrow of Time and Entropy
 
-The laws of fundamental physics are largely time-symmetric: the equations of motion work equally well forward and backward. Yet we experience a definitive arrow of time. This arrow is thermodynamic in origin.
+The laws of fundamental physics are largely time-symmetric: the equations of motion work equally well forward and backward. Yet a definitive arrow of time is experienced. This arrow is thermodynamic in origin.
 
 The second law of thermodynamics states that the entropy of an isolated system never decreases [Clausius 1865, Boltzmann 1877]. This is not a fundamental law in the same sense as conservation of energy; it is a statistical observation about overwhelmingly probable macroscopic behavior given the universe's low-entropy initial conditions (the "Past Hypothesis" [Albert 2000]).
 
@@ -126,7 +126,7 @@ Whether causal set theory proves correct is open. But the convergence is notable
 
 The physical foundations in Sections 2.1-2.5 establish real constraints on distributed computation. But the correspondence between spacetime and distributed systems is not identity. Distributed systems are strictly **harder** than the physics alone would suggest, in at least four specific ways:
 
-**1. Variable propagation speed.** The speed of light is an invariant constant -- the same for all observers, in all reference frames, always. Message propagation speed in distributed systems varies by orders of magnitude: microseconds on localhost, milliseconds across a data center, hundreds of milliseconds across continents, seconds through congested queues. There is no invariant "speed of message propagation." The light cone is a fixed geometric structure; the message cone is elastic, context-dependent, and unpredictable. Where the physics gives you a clean, invariant bound, distributed systems give you a noisy, variable one.
+**1. Variable propagation speed.** The speed of light is an invariant constant -- the same for all observers, in all reference frames, always. Message propagation speed in distributed systems varies by orders of magnitude: microseconds on localhost, milliseconds across a data center, hundreds of milliseconds across continents, seconds through congested queues. There is no invariant "speed of message propagation." The light cone is a fixed geometric structure; the message cone is elastic, context-dependent, and unpredictable. Where the physics provides a clean, invariant bound, distributed systems provide a noisy, variable one.
 
 **2. Mutable topology.** The causal structure of spacetime is fixed. The set of events that can causally influence a given event is determined by the geometry of spacetime, which does not change based on the events themselves (in the linearized regime relevant to any terrestrial system). In distributed systems, network topology changes dynamically: nodes join and leave, links fail and recover, routing paths shift. A node that was reachable one second ago may be unreachable now. The "message cone" is not just elastic -- it is mutable. The set of nodes that *can* communicate changes over time in ways that have no physical analogue.
 
@@ -134,7 +134,7 @@ The physical foundations in Sections 2.1-2.5 establish real constraints on distr
 
 **4. Replay.** Spacetime has no concept of "replaying" a causal history. Events happen once. Distributed systems explicitly support event replay for debugging, recovery, and state reconstruction (Law 3). Replay introduces a second temporal dimension -- the original causal time and the replay time -- that has no physical analogue. This is powerful (it enables the debugging-by-replay property), but it means the system's causal structure is not a simple partial order of unique events. It is a partial order that can be *re-traversed*, raising questions about wall-clock-dependent behavior during replay (see Section 12.3, Law 3).
 
-**Why this matters:** These four properties mean that distributed systems are not merely *as hard as* spacetime -- they are harder. Every constraint the physics imposes is real, and distributed systems add failure modes on top. An abstraction that violates the physical lower bound (e.g., assuming global time) is certainly wrong. But an abstraction that respects the physics while ignoring message loss, variable latency, topology changes, or replay semantics is also wrong -- just in ways the physics alone won't tell you.
+**Why this matters:** These four properties mean that distributed systems are not merely *as hard as* spacetime -- they are harder. Every constraint the physics imposes is real, and distributed systems add failure modes on top. An abstraction that violates the physical lower bound (e.g., assuming global time) is certainly wrong. But an abstraction that respects the physics while ignoring message loss, variable latency, topology changes, or replay semantics is also wrong -- just in ways the physics alone does not reveal.
 
 The correct framing is: **the physics establishes a floor, not a ceiling.** Causal alignment requires respecting both the physical constraints and the additional constraints specific to networked computation.
 
@@ -146,7 +146,7 @@ The correct framing is: **the physics establishes a floor, not a ceiling.** Caus
 
 A **partial order** is a binary relation ≤ on a set *S* that is reflexive, antisymmetric, and transitive. It is distinguished from a total order by the fact that not all elements need be comparable. Two incomparable elements are called **concurrent.**
 
-The distinction matters because a total order asserts a definitive sequence for all events -- appropriate within a single sequential process but physically incorrect across spatially separated processes. A partial order captures exactly the information we have: some events are causally ordered, and some are not.
+The distinction matters because a total order asserts a definitive sequence for all events -- appropriate within a single sequential process but physically incorrect across spatially separated processes. A partial order captures exactly the available information: some events are causally ordered, and some are not.
 
 The set of events in a distributed system, ordered by Lamport's happened-before relation, forms a partial order. This is the mathematically accurate representation of the causal structure.
 
@@ -251,13 +251,13 @@ In distributed systems, each node is an observer with access only to its own loc
 
 ### 5.2 The Problem of Induction and Absence
 
-David Hume identified that induction -- inference from past observations to future behavior -- cannot be logically justified [Hume 1739]. Karl Popper recast scientific knowledge as conjectural: we do not prove theories true; we fail to prove them false [Popper 1959].
+David Hume identified that induction -- inference from past observations to future behavior -- cannot be logically justified [Hume 1739]. Karl Popper recast scientific knowledge as conjectural: theories are not proven true; they merely fail to be proven false [Popper 1959].
 
 In distributed systems:
 
 - A node that has responded 10,000 times in < 5ms may fail on the 10,001st request.
 - A timeout that has never been exceeded may be exceeded tomorrow.
-- An observer "up" for 18 months may be partitioned from your node right now.
+- An observer "up" for 18 months may be partitioned from the local node at any time.
 
 Axiom 5 (Absence Is Not Evidence) is the distributed systems version of the problem of induction.
 
@@ -297,7 +297,7 @@ In reality, distributed systems operate under conditions where:
 - Failures are indistinguishable from latency (Section 3.5)
 - Knowledge is local, provisional, and revisable (Section 5.1, 5.3)
 
-**The core problem is that our architectural abstractions violate the physical structure of reality.**
+**The core problem is that dominant architectural abstractions violate the physical structure of reality.**
 
 This is not a metaphor. The speed of message propagation is finite. The causal structure of distributed events is a partial order. Observation requires time and energy. These are physical facts, and abstractions that deny them will produce systems that fail in ways the abstractions cannot explain.
 
@@ -305,9 +305,9 @@ This is not a metaphor. The speed of message propagation is finite. The causal s
 
 ## 7. Root Cause: The Narrative Fallacy
 
-We design distributed systems as if we are watching a film — a pre-recorded, totally ordered narrative where every scene follows logically from the last, the director controls what happens, and the ending is determined before the first frame plays. In reality, operating a distributed system is like playing a multiplayer video game. You are one participant in a world where other participants are acting independently. Events are happening that you cannot see. Entire regions of the game world are changing state while your view is pointed elsewhere. No player has the complete picture. Each player's experience is a subjective slice of a larger reality that no single participant observes in full. And there is no director — the "story" is emergent, not scripted.
+Distributed systems are often designed as if observing a film — a pre-recorded, totally ordered narrative where every scene follows logically from the last, the director controls what happens, and the ending is determined before the first frame plays. In reality, operating a distributed system is like playing a multiplayer video game. An observer is one participant in a world where other participants are acting independently. Events are occurring that cannot be seen globally. Entire regions of the system are changing state while local attention is pointed elsewhere. No player has the complete picture. Each player's experience is a subjective slice of a larger reality that no single participant observes in full. And there is no director — the "story" is emergent, not scripted.
 
-The film model feels natural because it matches how humans construct narratives (Section 7.1). But it is the wrong model. A film has a single camera, a single timeline, and a single authoritative cut. A multiplayer game has many players, many timelines, and no authoritative perspective — only the partial, local experience of each participant. Distributed systems are multiplayer games. We keep designing them as films.
+The film model feels natural because it matches how humans construct narratives (Section 7.1). But it is the wrong model. A film has a single camera, a single timeline, and a single authoritative cut. A multiplayer game has many players, many timelines, and no authoritative perspective — only the partial, local experience of each participant. Distributed systems are multiplayer games. They continue to be designed as films.
 
 The narrative fallacy [Taleb 2007] is the human tendency to construct coherent stories from partial, ambiguous evidence and then mistake those stories for reality. In software engineering, this manifests as:
 
@@ -316,7 +316,7 @@ The narrative fallacy [Taleb 2007] is the human tendency to construct coherent s
 - **Synchronous mental models** that lead developers to write `response = await service.call(request)` as if this were a local function call with a network cost, rather than a fundamentally different epistemic operation.
 - **State machines** that model global system state as transitioning between well-defined states, as if all participants agree on the current state.
 
-Most frameworks optimize for telling stories forward: *first A, then B, then C.* Reality only permits stories to be told backward: *C occurred; examining the evidence, we establish that B preceded it, and A preceded B.* The causal graph is constructed retrospectively from observed evidence, not prospectively from a script.
+Most frameworks optimize for telling stories forward: *first A, then B, then C.* Reality only permits stories to be told backward: *C occurred; examining the evidence establishes that B preceded it, and A preceded B.* The causal graph is constructed retrospectively from observed evidence, not prospectively from a script.
 
 This is directly analogous to the block universe interpretation in physics [Putnam 1967, Rietdijk 1966]: events of spacetime simply *exist* in their causal relations; the experience of a forward-moving "now" is an observer-dependent phenomenon. In a distributed system, the "forward story" is similarly an observer-dependent projection.
 
@@ -331,13 +331,13 @@ The narrative fallacy causes:
 
 The narrative fallacy described above is a symptom. The root cause is deeper: humans are bound inside time.
 
-Because we experience time from the inside, we carry three cognitive habits into software design:
+Because time is experienced from within, three cognitive habits are commonly carried into software design:
 
-1. **We treat the past as settled.** In life, the past is remembered — it feels fixed, certain, known. We transfer this assumption to software: logs are records, databases are truth, event stores are history. But when the system was running at 3 AM and something went wrong, no human was observing it. The logs are partial traces left by observers that were present. The database is a snapshot of one observer's beliefs at one moment. The "history" is a reconstruction from fragmentary evidence — a forensic investigation, not a memory. Developers examining an incident are not remembering what happened. They are **predicting the past** — assembling incomplete evidence into the most probable explanation, exactly as a forensic investigator puts a bullet back in the gun. This is entropy working against you. Reconstructing the past from scattered evidence is thermodynamically harder than recording it correctly as it happens — you are attempting to reverse a process that has lost information at every step. Every log line that was not written, every event that was not captured, every causal relationship that was not recorded is information that is permanently gone. A system that captures causal reality as it unfolds — recording observations, beliefs, and their relationships — does not require this costly reconstruction. The past becomes something that was actually observed, not something that must be reverse-engineered. This is why debugging distributed systems is hard. Not because the bugs are complex, but because the developer's epistemic position relative to the past is weak — and it is weak because the system was not designed to preserve the information the developer now needs.
+1. **The past is treated as settled.** In life, the past is remembered — it feels fixed, certain, known. This assumption is transferred to software: logs are records, databases are truth, event stores are history. But when the system was running at 3 AM and something went wrong, no human was observing it. The logs are partial traces left by observers that were present. The database is a snapshot of one observer's beliefs at one moment. The "history" is a reconstruction from fragmentary evidence — a forensic investigation, not a memory. Developers examining an incident are not remembering what happened. They are **predicting the past** — assembling incomplete evidence into the most probable explanation, exactly as a forensic investigator puts a bullet back in the gun. This is entropy working against the system. Reconstructing the past from scattered evidence is thermodynamically harder than recording it correctly as it happens — it is an attempt to reverse a process that has lost information at every step. Every log line that was not written, every event that was not captured, every causal relationship that was not recorded is information that is permanently gone. A system that captures causal reality as it unfolds — recording observations, beliefs, and their relationships — does not require this costly reconstruction. The past becomes something that was actually observed, not something that must be reverse-engineered. This is why debugging distributed systems is hard. Not because the bugs are complex, but because the developer's epistemic position relative to the past is weak — and it is weak because the system was not designed to preserve the information the developer now needs.
 
-2. **We overemphasize the present.** In life, the present is the only moment we directly experience. We transfer this to software: we reason about code from a snapshot — "what is the current state of the system?" — as if the entire distributed system shares a single "now." But there is no shared present (Section 2.1). Each observer has its own present, defined by its own most recent observations. When a developer reads the current state of a database and reasons about what the system is "doing right now," they are projecting a subjective present onto a system that has no such thing.
+2. **The present is overemphasized.** In life, the present is the only moment directly experienced. This is transferred to software: code is reasoned about from a snapshot — "what is the current state of the system?" — as if the entire distributed system shares a single "now." But there is no shared present (Section 2.1). Each observer has its own present, defined by its own most recent observations. When a developer reads the current state of a database and reasons about what the system is "doing right now," they are projecting a subjective present onto a system that has no such thing.
 
-3. **We treat the future as an execution path.** In life, the future feels open and uncertain — something to be predicted. We transfer this to software: the future is the code path that will execute next, a script to be followed. But in a properly modeled causal system, the future is not a single path — it is the complete set of declared temporal conditions. Every possible outcome has already been specified. When an event arrives, it does not create the future. It **eliminates the world lines that are no longer possible.** The developer is not predicting what will happen. They are watching possibility collapse into actuality. They already hold the knowledge of every possible outcome — they are just discovering which one applies. That is not prediction. That is **remembering the future.**
+3. **The future is treated as an execution path.** In life, the future feels open and uncertain — something to be predicted. This is transferred to software: the future is the code path that will execute next, a script to be followed. But in a properly modeled causal system, the future is not a single path — it is the complete set of declared temporal conditions. Every possible outcome has already been specified. When an event arrives, it does not create the future. It **eliminates the world lines that are no longer possible.** The developer is not predicting what will happen. They are watching possibility collapse into actuality. They already hold the knowledge of every possible outcome — they are just discovering which one applies. That is not prediction. That is **remembering the future.**
 
 **The subjective and objective vantage points.** The discomfort these inversions produce — "predict the past" feels wrong, "remember the future" feels backwards — is itself the signal. It feels wrong because the reader is reasoning from the **subjective vantage point**: sitting inside the system, embedded in its flow of time, experiencing events as they arrive.
 
@@ -354,7 +354,7 @@ Most distributed systems failures occur when developers use the subjective vanta
 
 Software is a set of requirements. Each requirement — every feature, every constraint, every integration, every edge case — adds complexity to the system. Some of this complexity is **irreducible**: it exists because the problem is genuinely hard, and no abstraction can make it disappear. This is the distinction between essential and accidental complexity [Brooks 1986], and it has a formal analogue in Kolmogorov complexity: the shortest possible description of a system's behavior has a lower bound that no encoding can reduce.
 
-Developers manage complexity by introducing abstractions: frameworks, libraries, patterns, protocols. Each abstraction is itself a requirement added to the set. We adopt them in the belief that they reduce the mental model complexity of the development process — that by hiding details behind an interface, we make the system easier to reason about.
+Developers manage complexity by introducing abstractions: frameworks, libraries, patterns, protocols. Each abstraction is itself a requirement added to the set. They are adopted in the belief that they reduce the mental model complexity of the development process — that by hiding details behind an interface, the system is made easier to reason about.
 
 This belief is often correct locally and wrong globally. The abstraction reduces the complexity *visible to the developer at authoring time*. But complexity is not destroyed. It is **transferred into the system** — into runtime behavior, failure modes, operational dependencies, and interaction effects that the abstraction was designed to hide. The developer's cognitive load decreases. The system's actual complexity increases. This is entropy transfer: the development process becomes more ordered (easier, more predictable, less effortful) at the cost of the software system becoming more disordered (more failure modes, more hidden interactions, more emergent behavior).
 
@@ -372,7 +372,7 @@ The most dangerous property of entropy transfer is this: **it feels like simplif
 
 This is not a theoretical concern. It is the mechanism by which distributed systems accumulate the failure modes described in Section 6. Each misaligned abstraction transfers a small amount of entropy into the system. Over years, across hundreds of decisions, the accumulated entropy produces a system whose behavior no single person can explain — not because the individuals were careless, but because each individually reasonable decision transferred complexity that was invisible at the point of decision.
 
-### 7.3 Locality Complexity: The Entropy You Cannot See
+### 7.3 Locality Complexity: Invisible Entropy
 
 The entropy transfer described in Section 7.2 is abstract. Here is a concrete example that every distributed systems engineer will recognize — and almost none will have thought of as accidental complexity.
 
@@ -396,7 +396,7 @@ This is an enormous amount of infrastructure. It employs entire teams. It has it
 
 **None of it is required by the business problem.**
 
-None of this infrastructure exists because the domain requires it. No business requirement says "the order service must maintain a connection pool to the payment service." No user story says "as a customer, I want circuit breakers between inventory and shipping." This entire category of infrastructure exists for one reason: the RPC abstraction demands that every observer know where every other observer lives. Locality complexity is entropy transferred into the system by a wrong abstraction — and it has been normalized so thoroughly that engineers do not recognize it as accidental complexity. It feels irreducible because we have been inside it so long.
+None of this infrastructure exists because the domain requires it. No business requirement says "the order service must maintain a connection pool to the payment service." No user story says "as a customer, I want circuit breakers between inventory and shipping." This entire category of infrastructure exists for one reason: the RPC abstraction demands that every observer know where every other observer lives. Locality complexity is entropy transferred into the system by a wrong abstraction — and it has been normalized so thoroughly that engineers do not recognize it as accidental complexity. It feels irreducible because it has been normalized for so long.
 
 **The Parallax inversion.** In a causally aligned system, there is no "here" and "there" between observers. There is only the **distributed space** — the event transport (Section 17.1). An observer's contract with the system is based on **intent and interest**, not identity and location:
 
@@ -457,7 +457,7 @@ Consider the business requirement: "When a customer places an order, reserve inv
 
 Two-phase commit treats this as a simultaneity problem — all participants must agree on the outcome *at the same moment*. The coordinator sends "prepare" to every participant. Each participant acquires locks, holds resources frozen, and votes. The coordinator collects all votes and sends "commit" or "abort." During the window between prepare and commit, every participant is *suspended* — holding locks, blocking other work, waiting for a decision from a remote node.
 
-The protocol assumes you can create a shared "now" across spatially separated participants — a frozen instant where everyone is in the same state simultaneously. This is the global-time fiction turned into a protocol. The coordinator is pretending to stop time: "everyone hold still while I collect agreement." The participants are pretending that their locked state is synchronized with each other's locked state. None of this is true. The coordinator's "now" is different from each participant's "now." The messages take time. The locks are held across that time. Any participant failure during the hold window blocks everyone — because the fiction of simultaneity requires unanimous participation.
+The protocol assumes it is possible to create a shared "now" across spatially separated participants — a frozen instant where everyone is in the same state simultaneously. This is the global-time fiction turned into a protocol. The coordinator is pretending to stop time: "everyone hold still while I collect agreement." The participants are pretending that their locked state is synchronized with each other's locked state. None of this is true. The coordinator's "now" is different from each participant's "now." The messages take time. The locks are held across that time. Any participant failure during the hold window blocks everyone — because the fiction of simultaneity requires unanimous participation.
 
 The entire failure-mode catalog of two-phase commit — coordinator failure blocking all participants, participant timeout causing uncertainty about the outcome, lock contention from long-running prepare phases, the need for transaction recovery logs — stems from one assumption: that "both or neither" requires synchronized agreement at a single point in time.
 
@@ -506,13 +506,13 @@ This produces the API versioning ecosystem:
 
 This is significant operational overhead. It employs dedicated teams (API platform, developer experience). It has its own failure modes (version mismatch in production, forgotten consumer still on v1, gateway misconfiguration). And it exists for one reason: the RPC abstraction requires bilateral agreement between caller and callee at call time.
 
-But there is a deeper problem than operational overhead. A version number on an API is a **frozen moment in development time**. When someone published `/api/v1/orders`, they captured what the order service's contract looked like *at that point in the development process*. v2 is a later moment. The version number is a timestamp — not a wall-clock timestamp, but a causal one: "this is what we knew about the domain when we wrote this interface."
+But there is a deeper problem than operational overhead. A version number on an API is a **frozen moment in development time**. When someone published `/api/v1/orders`, they captured what the order service's contract looked like *at that point in the development process*. v2 is a later moment. The version number is a timestamp — not a wall-clock timestamp, but a causal one: "this is what was known about the domain when this interface was written."
 
 That frozen development-time moment then **leaks into the runtime system**. Every caller compiled against v1 is tethered to that historical moment — bound to decisions made by developers who may no longer be on the team, about a domain understanding that may have since evolved. The runtime system is carrying the causal history of the development process as a first-class operational constraint. When Service A calls Service B's v1 endpoint, what is actually happening is: A's runtime behavior is coupled to a decision B's developers made at a specific point in the past, *outside the distributed space entirely*. The runtime must manage not only "what is happening now" but also "what developers decided at various points in the past, and which of those past decisions each observer is still bound to." API gateways doing version translation are mediating between *different development-time moments* at runtime. Deprecation management is the slow, painful process of dragging observers forward through development time while their compiled call sites pull them back to old moments.
 
 This is a **tether** — an artificial coupling that makes two observers appear decoupled on a deployment diagram while binding them together in practice. And the API version tether is only one variety. The preceding subsections have identified others: a **spatial tether** (I must know where you are), a **temporal tether** (I must poll at the right time to discover what you did), a **synchronization tether** (I must freeze and wait for your vote), a **behavioral tether** (my correctness depends on your response latency). Each tether is invisible on the architecture diagram. Each creates a real coupling that constrains deployment, development, and operational independence.
 
-This is why the **distributed monolith** antipattern is so pervasive and so resistant to correction. The distributed monolith is not a failure of discipline or architecture review. It is the *inevitable consequence* of an abstraction that creates invisible tethers between observers. RPC gives you separate processes, separate repositories, separate deployment pipelines — all the surface signals of decoupling. But underneath, every call site creates tethers: spatial, temporal, behavioral, developmental. The observers look independent. They are not. They are a monolith — distributed across the network but coupled through every tether the abstraction demands. Architecture reviews can identify specific instances of tight coupling, but they cannot eliminate the coupling surface itself. As long as the abstraction requires bilateral agreement at call sites, tethers will form. The distributed monolith is not a bug in how teams use microservices. It is a feature of the abstraction they are built on.
+This is why the **distributed monolith** antipattern is so pervasive and so resistant to correction. The distributed monolith is not a failure of discipline or architecture review. It is the *inevitable consequence* of an abstraction that creates invisible tethers between observers. RPC provides separate processes, separate repositories, separate deployment pipelines — all the surface signals of decoupling. But underneath, every call site creates tethers: spatial, temporal, behavioral, developmental. The observers look independent. They are not. They are a monolith — distributed across the network but coupled through every tether the abstraction demands. Architecture reviews can identify specific instances of tight coupling, but they cannot eliminate the coupling surface itself. As long as the abstraction requires bilateral agreement at call sites, tethers will form. The distributed monolith is not a bug in how teams use microservices. It is a feature of the abstraction they are built on.
 
 **The Parallax inversion.** In a causally aligned system, version is a property of the **event in the space**, not a negotiation between two observers. An observer emits an `OrderPlaced` event with a schema version embedded in the event metadata. It does not address the event to anyone. It does not know who will consume it.
 
@@ -526,7 +526,7 @@ The distributed monolith becomes **impossible by construction**, not merely disc
 
 #### Observability: Reconstructed vs. Recorded Causality
 
-Consider the business requirement: "When something goes wrong, we need to understand what happened."
+Consider the business requirement: "When something goes wrong, it is necessary to understand what happened."
 
 In an RPC system, each service logs its own activity — request received, processing started, downstream call made, response returned. These logs are independent text streams with no structural relationship to each other. Understanding what happened to a single business operation (e.g., Order 42's journey from placement to fulfillment) requires correlating fragments across multiple services' log streams.
 
@@ -665,7 +665,7 @@ Each axiom is grounded in established scientific results. None is speculative.
 
 **Statement:** The state of a distributed system is not a single objective value. It is an interpretation constructed by each observer from observed events.
 
-**Grounding:** In relativity, there is no single "state of the universe at time T" -- different observers slice spacetime differently. In quantum mechanics, the state depends on what has been measured (Section 2.5). The distinction between *ontic* state (how things are) and *epistemic* state (what we believe) is fundamental [Harrigan & Spekkens 2010].
+**Grounding:** In relativity, there is no single "state of the universe at time T" -- different observers slice spacetime differently. In quantum mechanics, the state depends on what has been measured (Section 2.5). The distinction between *ontic* state (how things are) and *epistemic* state (what is believed) is fundamental [Harrigan & Spekkens 2010].
 
 **Implication:** The programming model should distinguish between *local state* (what this node believes) and *global state* (which doesn't exist as a single consistent value). Where consistency is required, it must be achieved through explicit protocols, not assumed.
 
@@ -1104,7 +1104,7 @@ This pattern makes external side effects safe by default under replay: the adapt
 
 Causal correctness without liveness is insufficient. A system that never asserts false knowledge but also never makes progress is useless. The temporal condition model, by itself, provides no guarantee that conditions will ever fire. If an expected event never arrives, the condition waits indefinitely. Law 5 (Eventual Convergence) states that convergence time is unbounded. This is theoretically honest but operationally inadequate.
 
-The liveness problem cannot be solved within the causal framework alone. Causal alignment tells you what you *know* -- it cannot tell you what to *do* when you don't know enough. Liveness requires a **pragmatic layer** that operates alongside causal correctness, with explicit acknowledgment that liveness mechanisms introduce assumptions beyond what the causal structure justifies.
+The liveness problem cannot be solved within the causal framework alone. Causal alignment reveals what is *known* -- it cannot dictate what to *do* when information is insufficient. Liveness requires a **pragmatic layer** that operates alongside causal correctness, with explicit acknowledgment that liveness mechanisms introduce assumptions beyond what the causal structure justifies.
 
 **Principle: Timeout as escalation, not as failure.**
 
@@ -1532,7 +1532,7 @@ This is more aggressive than minimum -- it reflects the intuition that requiring
 
 **Weighted.** Constituents contribute unequally based on source reliability or relevance. Appropriate when some evidence is systematically more reliable than other evidence.
 
-**Guidance:** Use minimum composition unless you have a specific reason to do otherwise. It is the most conservative, the simplest to reason about, and the hardest to accidentally misuse. Document the composition rule used for each composite belief.
+**Guidance:** Use minimum composition unless there is a specific reason to do otherwise. It is the most conservative, the simplest to reason about, and the hardest to accidentally misuse. Document the composition rule used for each composite belief.
 
 ### 15.4 Decay
 
@@ -1599,7 +1599,7 @@ Confidence assignment, temporal condition thresholds, and decay parameters all i
 | Collaborative (UI, real-time) | Optimistic local update | 0.6 | Unconfirmed intent |
 | Collaborative | Server-confirmed update | 0.9 | Authoritative confirmation |
 
-**Warning:** If you cannot define what "correct" means for a claim type — if there is no way to retrospectively evaluate whether the claim was true — do not use high-confidence thresholds to gate automation for that claim. Use advisory thresholds and human review until correctness is definable.
+**Warning:** If it is not possible to define what "correct" means for a claim type — if there is no way to retrospectively evaluate whether the claim was true — do not use high-confidence thresholds to gate automation for that claim. Use advisory thresholds and human review until correctness is definable.
 
 **Threshold interaction guidance.** When setting initial thresholds, ensure the decay floor for each claim type is considered:
 - If the decay floor is **below** the temporal condition threshold, stale evidence is treated as absent — the condition will not fire on stale claims alone. This is the conservative default and is appropriate for ongoing state claims.
@@ -2194,7 +2194,7 @@ specific additions:
    partial order.
 
 2. **Confidence and provenance.** Event sourcing records *what happened* but not *how confident
-   we are in our interpretation* or *what evidence supports a given belief*. The confidence model
+   an interpretation is* or *what evidence supports a given belief*. The confidence model
    (Section 15) adds this layer.
 
 3. **Observer-relative semantics.** Event sourcing typically assumes a single canonical projection.
@@ -2809,13 +2809,13 @@ of profiles:
 
 ## 25. Conclusion
 
-Distributed systems do not fail because they are hard. They fail because we ask them to violate the structure of reality.
+Distributed systems do not fail because they are hard. They fail because they are asked to violate the physical structure of reality.
 
 The fundamental laws of physics establish that there is no global time, causality is partial, observation is local, and information propagation is finite. These are not limitations to be overcome by better technology -- they are the conditions under which all information systems operate.
 
 The dominant abstractions -- RPC, synchronous workflows, authoritative services, linear state machines -- encode assumptions that contradict these laws. They work in simple cases, within bounded contexts, and under benign conditions. They fail unpredictably when reality asserts itself: under partitions, concurrent updates, clock drift, partial failures, and the ordinary operation of systems at scale.
 
-Causal alignment is not a new technology. It is a discipline: the discipline of not asserting what you do not know, not ordering what is not ordered, and not hiding the temporal structure of information behind abstractions that deny it.
+Causal alignment is not a new technology. It is a discipline: the discipline of not asserting what is unknown, not ordering what is unordered, and not hiding the temporal structure of information behind abstractions that deny it.
 
 The path from current practice to causal alignment is incremental. It begins with stopping synchronous calls across service boundaries. It continues through separation of observation and action, extension of event streams to the edge, visible causal metadata, and formalized convergence. Each step produces a system that is more resilient, more debuggable, and more accurate about what it knows and when it knows it.
 
