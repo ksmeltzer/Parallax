@@ -445,33 +445,34 @@ In the Parallax model, each observer handles its own failures independently. If 
 The entire cache-miss-then-lookup-then-fill pattern — with its layered spatial knowledge, its invalidation logic, its connection management between tiers, its cache-stampede mitigation — dissolves. Not because caching disappeared, but because the abstraction no longer requires any observer to know *where* data lives. The business requirement was "I need the current state of Order 42." The traditional architecture turned that into "check this cache at this address, and if it misses, call this database at this endpoint, then write back to the cache." That second formulation is pure locality complexity — spatial knowledge demanded by the abstraction, not by the domain. The information asymmetry between cache and database was an artifact of placing truth in one location and forcing every other location to manage its distance from that truth.
 
 ```mermaid
-sequenceDiagram
-    box "Before: Layered Spatial Knowledge"
-    participant App as Application
-    participant Cache
-    participant DB as Database
+flowchart TD
+    subgraph Traditional["Before: Layered Point-to-Point (Spatial Knowledge)"]
+        direction TB
+        App[Application] -- "1. Query" --> Cache[Cache]
+        Cache -. "2. Miss" .-> App
+        App -- "3. Query" --> DB[(Database)]
+        DB -. "4. Return Data" .-> App
+        App -- "5. Update" --> Cache
     end
 
-    App->>Cache: 1. Get Order 42
-    Cache-->>App: 2. Cache Miss
-    App->>DB: 3. Query Order 42
-    DB-->>App: 4. Return Data
-    App->>Cache: 5. Write Data
+    subgraph Parallax["After: Distributed Event Kernel (Causal Graph)"]
+        direction TB
+        Space((("Distributed\nEvent\nSpace")))
+        Req[Requesting\nObserver]
+        CObs[Cache\nObserver]
+        DObs[(Database\nObserver)]
+
+        Req ==>|"1. Emit Intent\n(Need Order 42)"| Space
+        Space -.->|"2. Match Interest"| CObs
+        CObs ==>|"3. Emit Observation\n(Cache Miss)"| Space
+        Space -.->|"4. Match Interest"| DObs
+        DObs ==>|"5. Emit Observation\n(Order 42 Data)"| Space
+        Space -.->|"6. Match Interest"| Req
+        Space -.->|"6. Match Interest"| CObs
+    end
     
-    box "After: Parallax Event Space"
-    participant Req as Requesting Observer
-    participant Space as Event Space
-    participant CO as Cache Observer
-    participant DO as Database Observer
-    end
-
-    Req->>Space: 1. Emit: "Require Order 42"
-    Space->>CO: 2. Deliver Requirement
-    CO->>Space: 3. Emit: "Cache Miss"
-    Space->>DO: 4. Deliver Miss Event
-    DO->>Space: 5. Emit: "Order 42 Data"
-    Space->>Req: 6. Deliver Data
-    Space->>CO: 6. Deliver Data (Update Cache)
+    classDef space fill:#eef,stroke:#333,stroke-width:3px,color:#000;
+    class Space space;
 ```
 
 In the causally aligned model, truth is not a place. Truth is what has been observed in the space. An observer's beliefs are not "copies" of some authoritative original — they are the observer's causal history, as valid from its subjective vantage point as any other observer's history is from theirs. Consistency is achieved not by ensuring every copy matches a single source, but by ensuring every observer's beliefs converge through shared causal structure — the same mechanism that governs consistency everywhere else in the framework.
