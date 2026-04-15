@@ -89,11 +89,11 @@ graph TD
         S2["Spacelike Separated\n(Elsewhere)"] -. "No causal\npath" .- E
     end
     
-    style E fill:#f96,stroke:#333,stroke-width:4px
-    style Past fill:#eef,stroke:#99f,stroke-dasharray: 5 5
-    style Future fill:#eef,stroke:#99f,stroke-dasharray: 5 5
-    style S1 fill:#fbb,stroke:#f66,stroke-dasharray: 5 5
-    style S2 fill:#fbb,stroke:#f66,stroke-dasharray: 5 5
+    style E fill:#FFE0B2,stroke:#F57C00,stroke-width:4px,color:#000000
+    style Past fill:#E1F5FE,stroke:#0288D1,stroke-dasharray: 5 5,color:#000000
+    style Future fill:#E1F5FE,stroke:#0288D1,stroke-dasharray: 5 5,color:#000000
+    style S1 fill:#FFEBEE,stroke:#D32F2F,stroke-dasharray: 5 5,color:#000000
+    style S2 fill:#FFEBEE,stroke:#D32F2F,stroke-dasharray: 5 5,color:#000000
 ```
 
 For distributed systems, the structural correspondence is: the speed of light maps to the speed of message propagation, and the light cone maps to the *message cone* -- the set of events reachable from a given event by message passing. Events at different nodes that have exchanged no messages (directly or transitively) are the distributed equivalent of spacelike-separated events. Assigning them an order is logically unjustified.
@@ -334,10 +334,10 @@ graph LR
         Step1(Order Placed) --> Step2(Payment Processed)
         Step2 --> Step3(Inventory Reserved)
         Step3 --> Step4(Order Confirmed)
-        style Step1 fill:#ddd,stroke:#333
-        style Step2 fill:#ddd,stroke:#333
-        style Step3 fill:#ddd,stroke:#333
-        style Step4 fill:#ddd,stroke:#333
+        style Step1 fill:#F5F5F5,stroke:#616161,color:#000000
+        style Step2 fill:#F5F5F5,stroke:#616161,color:#000000
+        style Step3 fill:#F5F5F5,stroke:#616161,color:#000000
+        style Step4 fill:#F5F5F5,stroke:#616161,color:#000000
     end
 
     subgraph "The Causal Reality (Multiplayer Game)"
@@ -520,7 +520,7 @@ flowchart TD
         Space -.->|"6. Match Interest"| CObs
     end
     
-    classDef space fill:#eef,stroke:#333,stroke-width:3px,color:#000;
+    classDef space fill:#E1F5FE,stroke:#0288D1,stroke-width:3px,color:#000000;
     class Space space;
 ```
 
@@ -1224,8 +1224,8 @@ graph TD
         Space -- "4. Match Interest" --> HA[Human Operator\nor Auto-Mitigation]
     end
     
-    classDef err fill:#faa,stroke:#f00;
-    classDef safe fill:#afa,stroke:#090;
+    classDef err fill:#FFEBEE,stroke:#D32F2F,stroke-width:2px,color:#000000;
+    classDef safe fill:#E8F5E9,stroke:#388E3C,stroke-width:2px,color:#000000;
     class Error err;
     class PA safe;
 ```
