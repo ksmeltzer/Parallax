@@ -329,7 +329,7 @@ The film model feels natural because it matches how humans construct narratives 
 
 ```mermaid
 graph LR
-    subgraph The Narrative Fallacy (Illusion)
+    subgraph "The Narrative Fallacy (Illusion)"
         direction LR
         Step1(Order Placed) --> Step2(Payment Processed)
         Step2 --> Step3(Inventory Reserved)
@@ -340,7 +340,7 @@ graph LR
         style Step4 fill:#ddd,stroke:#333
     end
 
-    subgraph The Causal Reality (Multiplayer Game)
+    subgraph "The Causal Reality (Multiplayer Game)"
         direction TD
         A((Order Node))
         B((Payment Node))
@@ -1209,14 +1209,14 @@ The document identifies timeouts-as-failure as an anti-pattern (Section 11.2). T
 
 ```mermaid
 graph TD
-    subgraph Traditional: Timeout = Failure (Anti-Pattern)
+    subgraph "Traditional: Timeout = Failure (Anti-Pattern)"
         direction LR
         O1[Observer A] -- "1. Sync Call" --> S2[Service B]
         S2 -. "2. No Response (Delay/Crash)" .-X O1
         O1 -- "3. Throw 'Service B is DOWN' Error" --> Error((State\nFailure))
     end
 
-    subgraph Parallax: Timeout = Escalation (Causal Fact)
+    subgraph "Parallax: Timeout = Escalation (Causal Fact)"
         direction LR
         PA[Observer A] -- "1. Emits Intent" --> Space((Event Space))
         Space -. "2. Awaits Event\n(Causal Ticks pass...)" .- PA
